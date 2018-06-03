@@ -1,0 +1,78 @@
+<div class="container">
+  <section>
+    <div class="row">
+      <nav class="navbar navbar-default">
+        <div class="container">
+          <div class="navbar-header">
+            <form id="searchForm">
+              <div class="col-md-6" id="sort">
+                <div class="form-group">
+                  <select class="form-control" name="sortValueBy" [(ngModel)]="sortValueBy" (change)="sortBySelectedCriteria(gitHubSearchUsers.items, this.sortValueBy)">
+                                            <option selected>Sort By Name and Rank</option>
+                                              <option value="nameAsc">Name (A-Z)</option>
+                                              <option value="nameDesc">Name (Z-A)</option>
+                                              <option value="rankAsc">Rank Asc</option>
+                                              <option value="rankDesc">Rank Desc</option>
+                                            </select>
+                </div>
+              </div>
+              <div class="form-group col-md-6" id="search">
+                <div class="input-group">
+                  <input type="text" name="username" class="form-control" placeholder="Enter A Github Username..." [(ngModel)]="username" (keyup)="searchUsers()">
+                  <div class="input-group-addon"><i class="fa fa-search " aria-hidden="true"></i></div>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </nav>
+    </div>
+  </section>
+  <section>
+    <div class="row ">
+      <div *ngIf="gitHubSearchUsers">
+        <div class="panel panel-default">
+          <p class="totalCount"> <label>Total Count: </label>{{gitHubSearchUsers.items.length}}</p>
+          <div class="panel-body">
+            <div class="row">
+              <div *ngFor="let item of gitHubSearchUsers.items| 
+                                            paginate :{itemsPerPage: 5, currentPage:page, id: '1'};
+                                            let i = index " class="user">
+                <div class="col-md-2 clearfix">
+                  <img class="img-circle gap-right" src="{{item.avatar_url}}" height="100px" width="100px">
+                </div>
+                <div class="col-md-8 clearfix">
+                  <h3>{{item.login}}</h3>
+                  <p><label>Profile:   </label>{{item.url}}</p>
+                  <label>Organizations url:   </label>{{item.organizations_url}}
+                  <label>Subscriptions url:   </label>{{item.subscriptions_url}}
+                  <div *ngIf="selectedLogin==item.login" id="repoDetailsCollapse" class="collapse in">
+                    <table border="1">
+                      <div *ngFor="let repo of repos; let i=index ">
+                        <div *ngIf="i<4">
+                          <tr>
+                            <td style="font-weight:bold">{{repo.name}}:</td>
+                            <td>{{repo.language}}</td>
+                          </tr>
+                        </div>
+                      </div>
+                    </table>
+                  </div>
+                </div>
+                <div class="col-md-2 clearfix">
+                  <section>
+                    <button type="button" class="btn btn-outline-primary align-self-end" data-toggle="collapse" data-target="#repoDetailsCollapse"
+                      (click)="getRepoDetails(item.login)">Deatails
+                    </button>
+                  </section>
+                </div>
+              </div>
+            </div>
+            <pagination-controls class="pagination" (pageChange)="page = $event" id="1" maxSize="5" directionLinks="false" autoHide="true">
+            </pagination-controls>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
